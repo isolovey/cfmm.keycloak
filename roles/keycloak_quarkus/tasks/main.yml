@@ -5,12 +5,6 @@
   tags:
     - prereqs
 
-- name: Include firewall config tasks
-  ansible.builtin.include_tasks: firewalld.yml
-  when: keycloak_quarkus_configure_firewalld
-  tags:
-    - firewall
-
 - name: Include install tasks
   ansible.builtin.include_tasks: install.yml
   tags:
@@ -41,7 +35,7 @@
     mode: 0644
   become: yes
   notify:
-    - restart keycloak    
+    - restart keycloak
 
 - name: Ensure logdirectory exists
   ansible.builtin.file:
