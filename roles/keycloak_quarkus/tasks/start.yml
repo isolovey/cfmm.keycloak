@@ -1,10 +1,46 @@
 ---
+
+- name: Set admin credentials and restart if not already created
+  block:
+    - name: Check admin credentials by generating a token (supposed to fail on first installation)
+      ansible.builtin.uri:
+        url: "http://localhost:{{ keycloak_quarkus_http_port }}/realms/master/protocol/openid-connect/token"
+        method: POST
+        body: "client_id=admin-cli&username={{ keycloak_quarkus_admin_user }}&password={{ keycloak_quarkus_admin_pass }}&grant_type=password"
+        validate_certs: no
+      register: keycloak_auth_response
+      until: keycloak_auth_response.status == 200
+      retries: 2
+      delay: 2
+    - name: Ensure keycloak service is started
+      set_fact:
+        _keycloak_service_state: started
+  rescue:
+    - name: "Temporarily configure sysconfig file for keycloak service"
+      ansible.builtin.copy:
+        dest: "{{ keycloak_quarkus_service_admin_environment_file }}"
+        content: |
+          KEYCLOAK_ADMIN={{ keycloak_quarkus_admin_user }}
+          KEYCLOAK_ADMIN_PASSWORD='{{ keycloak_quarkus_admin_pass }}'
+        owner: root
+        group: root
+        mode: 0644
+      become: yes
+    - name: Ensure keycloak service is started
+      set_fact:
+        _keycloak_service_state: restarted
+
 - name: "Start {{ keycloak.service_name }} service"
   ansible.builtin.systemd:
     name: keycloak
     enabled: yes
-    state: started
+    state: "{{ _keycloak_service_state }}"
   become: yes
+
+- name: "Ensure temporary environment file is absent"
+  ansible.builtin.file:
+    path: "{{ keycloak_quarkus_service_admin_environment_file }}"
+    state: absent
 
 - name: "Wait until {{ keycloak.service_name }} becomes active {{ keycloak.health_url }}"
   ansible.builtin.uri:
@@ -13,3 +49,14 @@
   until: keycloak_status.status == 200
   retries: 25
   delay: 10
+
+- name: Check admin credentials by generating a token
+  ansible.builtin.uri:
+    url: "http://localhost:{{ keycloak_quarkus_http_port }}/realms/master/protocol/openid-connect/token"
+    method: POST
+    body: "client_id=admin-cli&username={{ keycloak_quarkus_admin_user }}&password={{ keycloak_quarkus_admin_pass }}&grant_type=password"
+    validate_certs: no
+  register: keycloak_auth_response
+  until: keycloak_auth_response.status == 200
+  retries: 2
+  delay: 2
