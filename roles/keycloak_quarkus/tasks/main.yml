@@ -32,6 +32,9 @@
         value: "{{ keycloak_quarkus_admin_user }}"
       - name: KEYCLOAK_ADMIN_PASSWORD
         value: "{{ keycloak_quarkus_admin_pass }}"
+      - name: JAVA_OPTS_APPEND
+        value: "-Djgroups.mcast_addr={{ keycloak_quarkus_jgroups_mcast_addr }} \
+        -Djgroups.bind_addr={{ keycloak_quarkus_jgroups_bind_addr }}"
   tags:
     - systemd
 
