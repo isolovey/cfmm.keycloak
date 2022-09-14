@@ -10,8 +10,28 @@
   tags:
     - install
 
-- name: Include systemd tasks
-  ansible.builtin.include_tasks: systemd.yml
+- name: Create systemd service
+  ansible.builtin.include_role:
+    name: cfmm.general.systemd
+    public: no
+  vars:
+    systemd_task_user: '{{ keycloak.service_user }}'
+    systemd_task_group: '{{ keycloak.service_group }}'
+    systemd_task_command: '{{ keycloak.home }}/bin/kc.sh start --auto-build'
+    systemd_task_wantedby:
+      - multi-user.target
+    systemd_task_timeout_start_sec: 600
+    systemd_task_timeout_stop_sec: 600
+    systemd_task_type: simple
+    systemd_task: keycloak
+    systemd_restart: no
+    systemd_after:
+      - network.target
+    systemd_task_environment:
+      - name: KEYCLOAK_ADMIN
+        value: "{{ keycloak_quarkus_admin_user }}"
+      - name: KEYCLOAK_ADMIN_PASSWORD
+        value: "{{ keycloak_quarkus_admin_pass }}"
   tags:
     - systemd
 

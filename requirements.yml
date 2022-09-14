@@ -2,3 +2,7 @@
 collections:
   - name: middleware_automation.common
   - name: ansible.posix
+  - name: git+git@git.cfmm.uwo.ca:ansible/general.git
+    type: git
+    version: main
+
