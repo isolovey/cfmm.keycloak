@@ -27,11 +27,10 @@
     systemd_restart: no
     systemd_after:
       - network.target
+    #prefixed with "-", which indicates that if the file does not exist, it will not be read and no error or
+    # warning message is logged
+    systemd_task_environment_file: "-{{ keycloak_quarkus_service_admin_environment_file }}"
     systemd_task_environment:
-      - name: KEYCLOAK_ADMIN
-        value: "{{ keycloak_quarkus_admin_user }}"
-      - name: KEYCLOAK_ADMIN_PASSWORD
-        value: "{{ keycloak_quarkus_admin_pass }}"
       - name: JAVA_OPTS_APPEND
         value: "-Djgroups.mcast_addr={{ keycloak_quarkus_jgroups_mcast_addr }} \
         -Djgroups.bind_addr={{ keycloak_quarkus_jgroups_bind_addr }}"
