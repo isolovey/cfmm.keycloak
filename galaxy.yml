@@ -1,5 +1,5 @@
 ---
-namespace: middleware_automation
+namespace: cfmm
 name: keycloak
 version: "1.2.0"
 readme: README.md
@@ -24,9 +24,9 @@ tags:
 dependencies:
   "middleware_automation.common": ">=1.0.0"
   "ansible.posix": ">=1.4.0"
-repository: https://github.com/ansible-middleware/keycloak
+repository: https://github.com/isolovey/keycloak
 documentation: https://ansible-middleware.github.io/keycloak
-homepage: https://github.com/ansible-middleware/keycloak
+homepage: https://github.com/isolovey/keycloak
 issues: https://github.com/ansible-middleware/keycloak/issues
 build_ignore:
   - .gitignore
