@@ -102,6 +102,7 @@
   when:
     - (not path_to_workdir.stat.exists) or new_version_downloaded.changed
   notify:
+    - build keycloak
     - restart keycloak
 
 - name: Inform decompression was not executed

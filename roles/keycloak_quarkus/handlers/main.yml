@@ -1,4 +1,10 @@
 ---
+- name: "Build {{ keycloak.service_name }}"
+  ansible.builtin.command: "{{ keycloak.home }}/bin/kc.sh build"
+  become: yes
+  become_user: "{{ keycloak.service_user }}"
+  listen: "build keycloak"
+
 - name: "Restart {{ keycloak.service_name }}"
   ansible.builtin.include_tasks: restart.yml
   listen: "restart keycloak"

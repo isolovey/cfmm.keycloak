@@ -10,6 +10,39 @@
   tags:
     - install
 
+- name: "Configure config for keycloak service"
+  ansible.builtin.template:
+    src: keycloak.conf.j2
+    dest: "{{ keycloak.home }}/conf/keycloak.conf"
+    owner: "{{ keycloak.service_user }}"
+    group: "{{ keycloak.service_group }}"
+    mode: 0644
+  become: yes
+  notify:
+    - build keycloak
+    - restart keycloak
+
+- name: "Configure quarkus config for keycloak service"
+  ansible.builtin.template:
+    src: quarkus.properties.j2
+    dest: "{{ keycloak.home }}/conf/quarkus.properties"
+    owner: "{{ keycloak.service_user }}"
+    group: "{{ keycloak.service_group }}"
+    mode: 0644
+  become: yes
+  notify:
+    - build keycloak
+    - restart keycloak
+
+- name: Ensure logdirectory exists
+  ansible.builtin.file:
+    state: directory
+    path:  "{{ keycloak.log.file | dirname }}"
+    owner: "{{ keycloak.service_user }}"
+    group: "{{ keycloak.service_group }}"
+    mode: 0775
+  become: yes
+
 - name: Create systemd service
   ansible.builtin.include_role:
     name: cfmm.general.systemd
@@ -17,7 +50,7 @@
   vars:
     systemd_task_user: '{{ keycloak.service_user }}'
     systemd_task_group: '{{ keycloak.service_group }}'
-    systemd_task_command: '{{ keycloak.home }}/bin/kc.sh start --auto-build'
+    systemd_task_command: '{{ keycloak.home }}/bin/kc.sh start --optimized'
     systemd_task_wantedby:
       - multi-user.target
     systemd_task_timeout_start_sec: 600
@@ -36,37 +69,6 @@
         -Djgroups.bind_addr={{ keycloak_quarkus_jgroups_bind_addr }}"
   tags:
     - systemd
-
-- name: "Configure config for keycloak service"
-  ansible.builtin.template:
-    src: keycloak.conf.j2
-    dest: "{{ keycloak.home }}/conf/keycloak.conf"
-    owner: "{{ keycloak.service_user }}"
-    group: "{{ keycloak.service_group }}"
-    mode: 0644
-  become: yes
-  notify:
-    - restart keycloak
-
-- name: "Configure quarkus config for keycloak service"
-  ansible.builtin.template:
-    src: quarkus.properties.j2
-    dest: "{{ keycloak.home }}/conf/quarkus.properties"
-    owner: "{{ keycloak.service_user }}"
-    group: "{{ keycloak.service_group }}"
-    mode: 0644
-  become: yes
-  notify:
-    - restart keycloak
-
-- name: Ensure logdirectory exists
-  ansible.builtin.file:
-    state: directory
-    path:  "{{ keycloak.log.file | dirname }}"
-    owner: "{{ keycloak.service_user }}"
-    group: "{{ keycloak.service_group }}"
-    mode: 0775
-  become: yes
 
 - name: "Start and wait for keycloak service"
   ansible.builtin.include_tasks: start.yml

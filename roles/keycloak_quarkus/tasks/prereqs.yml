@@ -18,7 +18,7 @@
 - name: Ensure required packages are installed
   ansible.builtin.apt:
     name:
-      - openjdk-11-jdk-headless
+      - openjdk-17-jdk-headless
       - unzip
     cache_valid_time: 86400
   become: yes

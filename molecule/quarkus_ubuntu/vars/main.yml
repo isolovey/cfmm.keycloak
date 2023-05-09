@@ -7,5 +7,5 @@ keycloak_quarkus_log: file
 keycloak_quarkus_https_enabled: True
 keycloak_quarkus_key_file: "{{ keycloak.home }}/conf/key.pem"
 keycloak_quarkus_cert_file: "{{ keycloak.home }}/conf/cert.pem"
-keycloak_quarkus_version: 18.0.2
+keycloak_quarkus_version: 21.1.1
 keycloak_quarkus_service_admin_environment_file: /tmp/keycloak-admin-credentials

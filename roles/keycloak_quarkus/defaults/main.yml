@@ -1,6 +1,6 @@
 ---
 ### Configuration specific to keycloak
-keycloak_quarkus_version: 18.0.0
+keycloak_quarkus_version: 21.1.1
 keycloak_quarkus_archive: "keycloak-{{ keycloak_quarkus_version }}.zip"
 keycloak_quarkus_download_url: "https://github.com/keycloak/keycloak/releases/download/{{ keycloak_quarkus_version }}/{{ keycloak_quarkus_archive }}"
 keycloak_quarkus_installdir: "{{ keycloak_quarkus_dest }}/keycloak-{{ keycloak_quarkus_version }}"
@@ -19,7 +19,7 @@ keycloak_quarkus_service_user: keycloak
 keycloak_quarkus_service_group: keycloak
 keycloak_quarkus_service_pidfile: "/run/keycloak.pid"
 keycloak_quarkus_configure_firewalld: False
-keycloak_quarkus_service_admin_environment_file: "/etc/sysconfig/keycloak-admin-credentials"
+keycloak_quarkus_service_admin_environment_file: "/opt/keycloak/keycloak-admin-credentials"
 
 ### administrator console password
 keycloak_quarkus_admin_user: admin
