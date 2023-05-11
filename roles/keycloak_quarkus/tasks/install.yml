@@ -38,50 +38,14 @@
   ansible.builtin.set_fact:
     archive: "{{ keycloak_quarkus_dest }}/{{ keycloak.bundle }}"
 
-- name: Check download archive path
-  become: yes
-  ansible.builtin.stat:
-    path: "{{ archive }}"
-  register: archive_path
-
-## download to controller
-- name: Check local download archive path
-  ansible.builtin.stat:
-    path: "{{ lookup('env', 'PWD') }}"
-  register: local_path
-  delegate_to: localhost
-
 - name: Download keycloak archive
   ansible.builtin.get_url: # noqa risky-file-permissions delegated, uses controller host user
     url: "{{ keycloak_quarkus_download_url }}"
-    dest: "{{ local_path.stat.path }}/{{ keycloak.bundle }}"
-    mode: 0640
-  delegate_to: localhost
-  when:
-    - archive_path is defined
-    - archive_path.stat is defined
-    - not archive_path.stat.exists
-    - not keycloak.offline_install
-
-- name: Check downloaded archive
-  ansible.builtin.stat:
-    path: "{{ local_path.stat.path }}/{{ keycloak.bundle }}"
-  register: local_archive_path
-  delegate_to: localhost
-
-## copy and unpack
-- name: Copy archive to target nodes
-  ansible.builtin.copy:
-    src: "{{ local_path.stat.path }}/{{ keycloak.bundle }}"
     dest: "{{ archive }}"
     owner: "{{ keycloak.service_user }}"
     group: "{{ keycloak.service_group }}"
-    mode: 0750
+    mode: 0640
   register: new_version_downloaded
-  when:
-    - not archive_path.stat.exists
-    - local_archive_path.stat is defined
-    - local_archive_path.stat.exists
   become: yes
 
 - name: "Check target directory: {{ keycloak.home }}/bin/"

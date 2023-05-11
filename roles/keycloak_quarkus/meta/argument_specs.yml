@@ -21,11 +21,6 @@ argument_specs:
                 default: "{{ keycloak_quarkus_dest }}/keycloak-{{ keycloak_quarkus_version }}"
                 description: "Installation path"
                 type: "str"
-            keycloak_quarkus_offline_install:
-                # line 9 of defaults/main.yml
-                default: false
-                description: "Perform an offline install"
-                type: "bool"
             keycloak_quarkus_jvm_package:
                 # line 12 of defaults/main.yml
                 default: "java-11-openjdk-headless"

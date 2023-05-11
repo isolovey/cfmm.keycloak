@@ -62,14 +62,13 @@ Role Defaults
 |`keycloak_quarkus_ispn_sasl_mechanism` | Infinispan auth mechanism | `SCRAM-SHA-512` |
 |`keycloak_quarkus_ispn_use_ssl` | Whether infinispan uses TLS connection | `false` |
 |`keycloak_quarkus_ispn_trust_store_path` | Path to infinispan server trust certificate | `/etc/pki/java/cacerts` |
-|`keycloak_quarkus_ispn_trust_store_password` | Password for infinispan certificate keystore | `changeit` | 
+|`keycloak_quarkus_ispn_trust_store_password` | Password for infinispan certificate keystore | `changeit` |
 
 
 * Install options
 
 | Variable | Description | Default |
 |:---------|:------------|:---------|
-|`keycloak_quarkus_offline_install` | Perform an offline install | `False`|
 |`keycloak_quarkus_download_url`| Download URL for keycloak | `https://github.com/keycloak/keycloak/releases/download/<version>/<archive>`| 
 |`keycloak_quarkus_version`| keycloak.org package version | `17.0.1` |
 |`keycloak_quarkus_dest`| Installation root path | `/opt/keycloak` |

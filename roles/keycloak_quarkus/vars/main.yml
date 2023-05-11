@@ -8,7 +8,6 @@ keycloak:
   cli_path: "{{ keycloak_quarkus_home }}/bin/kcadm.sh"
   service_user: "{{ keycloak_quarkus_service_user }}"
   service_group: "{{ keycloak_quarkus_service_group }}"
-  offline_install: "{{ keycloak_quarkus_offline_install }}"
   log:
     file: "{{ keycloak_quarkus_home }}/{{ keycloak_quarkus_log_file }}"
     level: "{{ keycloak_quarkus_log_level }}"
