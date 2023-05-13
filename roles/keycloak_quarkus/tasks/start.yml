@@ -16,14 +16,15 @@
       set_fact:
         _keycloak_service_state: started
   rescue:
-    - name: "Temporarily configure sysconfig file for keycloak service"
+    - name: "Temporarily configure keycloak admin credentials in the environment file for keycloak service"
       ansible.builtin.copy:
         dest: "{{ keycloak_quarkus_service_admin_environment_file }}"
         content: |
           KEYCLOAK_ADMIN={{ keycloak_quarkus_admin_user }}
           KEYCLOAK_ADMIN_PASSWORD='{{ keycloak_quarkus_admin_pass }}'
-        owner: root
-        group: root
+          KC_HOSTNAME={{ keycloak_quarkus_host }}
+        owner: "{{ keycloak.service_user }}"
+        group: "{{ keycloak.service_group }}"
         mode: 0644
       become: yes
     - name: Ensure keycloak service is started
@@ -37,10 +38,15 @@
     state: "{{ _keycloak_service_state }}"
   become: yes
 
-- name: "Ensure temporary environment file is absent"
-  ansible.builtin.file:
-    path: "{{ keycloak_quarkus_service_admin_environment_file }}"
-    state: absent
+- name: "Configure the environment file for the keycloak service"
+  ansible.builtin.copy:
+    dest: "{{ keycloak_quarkus_service_admin_environment_file }}"
+    content: |
+      KC_HOSTNAME={{ keycloak_quarkus_host }}
+    owner: "{{ keycloak.service_user }}"
+    group: "{{ keycloak.service_group }}"
+    mode: 0644
+  become: yes
 
 - name: "Wait until {{ keycloak.service_name }} becomes active {{ keycloak.health_url }}"
   ansible.builtin.uri:
